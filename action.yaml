@@ -1,0 +1,68 @@
+name: Cloned Linked Repo
+description: Clone a repo at a version linked from a PR description.
+
+inputs:
+  repo:
+    description: >
+      The slug (e.g. "sass/sass") of the repository whose PR links this action
+      should look for.
+    required: true
+  token:
+    description: >
+      The GitHub token used to access the pull request's message.
+    default: ${{ github.token }}
+  default-ref:
+    description: >
+      The default branch to check out when this isn't a PR or doesn't link to a
+      PR. Note that if the current branch or PR base is of the form "feature.*",
+      this will always use the same branch name as the default.
+    default: main
+  ssh-key:
+    description: Passed directly to actions/checkout.
+  ssh-known-hosts:
+    description: Passed directly to actions/checkout.
+  ssh-strict:
+    description: Passed directly to actions/checkout.
+  persist-credentials:
+    description: Passed directly to actions/checkout.
+  path:
+    description: Passed directly to actions/checkout.
+  clean:
+    description: Passed directly to actions/checkout.
+  fetch-depth:
+    description: Passed directly to actions/checkout.
+  lfs:
+    description: Passed directly to actions/checkout.
+  submodules:
+    description: Passed directly to actions/checkout.
+
+runs:
+  using: composite
+  steps:
+
+  - run: "bash $GITHUB_ACTION_PATH/find-ref.sh"
+    id: find-ref
+    shell: bash
+    env:
+      PR_BRANCH: ${{ github.base_ref }}
+      CURRENT_REF: ${{ github.ref }}
+      PR_BODY: ${{ github.event.pull_request.body }}
+      # Inputs must be repeated due to actions/runner#665
+      REPO: ${{ inputs.repo }}
+      TOKEN: ${{ inputs.token }}
+      DEFAULT_REF: ${{ inputs.default-ref }}
+
+  - uses: actions/checkout@v2
+    with:
+      repository: ${{ inputs.repo }}
+      ref: ${{ steps.find-ref.outputs.ref }}
+      token: ${{ inputs.token }}
+      ssh-key: ${{ inputs.ssh-key }}
+      ssh-known-hosts: ${{ inputs.ssh-known-hosts }}
+      ssh-strict: ${{ inputs.ssh-strict }}
+      persist-credentials: ${{ inputs.persist-credentials }}
+      path: ${{ inputs.path }}
+      clean: ${{ inputs.clean }}
+      fetch-depth: ${{ inputs.fetch-depth }}
+      lfs: ${{ inputs.lfs }}
+      submodules: ${{ inputs.submodules }}
