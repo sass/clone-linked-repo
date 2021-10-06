@@ -26,7 +26,9 @@ inputs:
   persist-credentials:
     description: Passed directly to actions/checkout.
   path:
-    description: Passed directly to actions/checkout.
+    description: >
+      Like actions/checkout's path parameter, but defaults to the repository
+      name rather than the current working directory.
   clean:
     description: Passed directly to actions/checkout.
   fetch-depth:
@@ -40,9 +42,9 @@ runs:
   using: composite
   steps:
 
-  - run: "bash $GITHUB_ACTION_PATH/find-ref.sh"
-    id: find-ref
+  - id: find-ref
     shell: bash
+    run: "bash $GITHUB_ACTION_PATH/find-ref.sh"
     env:
       PR_BRANCH: ${{ github.base_ref }}
       CURRENT_REF: ${{ github.ref }}
@@ -51,6 +53,18 @@ runs:
       REPO: ${{ inputs.repo }}
       TOKEN: ${{ inputs.token }}
       DEFAULT_REF: ${{ inputs.default-ref }}
+
+  - id: path
+    shell: bash
+    run: |
+      if [[ -z "$INPUT_PATH" ]]; then
+        echo "::set-output name=path::${REPO/*\//}"
+      else
+        echo "::set-output name=path::${INPUT_PATH}"
+      fi
+    env:
+      INPUT_PATH: ${{ inputs.path }}
+      REPO: ${{ inputs.repo }}
 
   - uses: actions/checkout@v2
     with:
@@ -61,7 +75,7 @@ runs:
       ssh-known-hosts: ${{ inputs.ssh-known-hosts }}
       ssh-strict: ${{ inputs.ssh-strict }}
       persist-credentials: ${{ inputs.persist-credentials }}
-      path: ${{ inputs.path }}
+      path: ${{ steps.path.outputs.path }}
       clean: ${{ inputs.clean }}
       fetch-depth: ${{ inputs.fetch-depth }}
       lfs: ${{ inputs.lfs }}
