@@ -3,10 +3,6 @@
 # license that can be found in the LICENSE file or at
 # https://opensource.org/licenses/MIT.
 
-# Echoes the sass/sass Git ref that should be checked out for the current GitHub
-# Actions run. If we're running specs for a pull request which refers to a
-# sass/sass pull request, we'll run against the latter rather than sass/sass
-# main.
 if [ -z "$PR_BRANCH" ]; then
   # Remove the "refs/heads/" prefix
   current_branch="${CURRENT_REF/refs\/heads\//}"
@@ -31,6 +27,10 @@ echo "::group::Pull request body"
 echo "$PR_BODY"
 echo "::endgroup::"
 
+# Echoes the sass/sass Git ref that should be checked out for the current GitHub
+# Actions run. If we're running specs for a pull request which refers to a
+# sass/sass pull request, we'll run against the latter rather than sass/sass
+# main.
 echo "::group::Finding pull request reference"
 for link in "$(echo "$PR_BODY" | grep -Eo "${REPO}(#|/pull/)[0-9]+")"; do
   if [[ "$link" = *#* ]]; then
