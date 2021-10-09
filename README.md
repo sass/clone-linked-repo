@@ -52,7 +52,7 @@ priority.
 * This will recognize both short references (`sass/sass-spec#123`) and full URLs
   (`https://github.com/sass/sass-spec/pulls/123`).
 
-* This will ignore issue references.
+* This will ignore references to issues and closed pull requests.
 
 * If the PR message contains multiple references to a PR from the same
   repository, this will use the first one.
