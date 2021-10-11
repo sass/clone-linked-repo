@@ -39,8 +39,13 @@ for link in "$(echo "$PR_BODY" | grep -Eo "${REPO}(#|/pull/)[0-9]+")"; do
     number="${link#*/pull/}"
   fi
 
-  if curl --fail --silent --head --header "Authorization: token $TOKEN" \
-       "https://api.github.com/repos/$REPO/pulls/${number}" > /dev/null; then
+  json="$(
+    curl --fail --silent \
+       --header "Authorization: token $TOKEN" \
+       --header "Accept: application/vnd.github.v3+json" \
+       "https://api.github.com/repos/$REPO/pulls/${number}"
+  )"
+  if [[ "$?" == 0 && "$(echo "$json" | jq .state -r)" == "open" ]]; then
     echo "Linked to pull request $number"
     echo "::set-output name=ref::refs/pull/$number/head"
     exit 0
