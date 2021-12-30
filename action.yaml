@@ -16,6 +16,9 @@ inputs:
       The default branch to check out when this isn't a PR or doesn't link to a
       PR. Note that if the current branch or PR base is of the form "feature.*",
       this will always use the same branch name as the default.
+
+      This may be `null` to indicate that the repository shouldn't be cloned at
+      all if there isn't a linked PR.
     default: main
   ssh-key:
     description: Passed directly to actions/checkout.
@@ -67,6 +70,7 @@ runs:
       REPO: ${{ inputs.repo }}
 
   - uses: actions/checkout@v2
+    if: steps.find-ref.outputs.skip == 'false'
     with:
       repository: ${{ inputs.repo }}
       ref: ${{ steps.find-ref.outputs.ref }}
