@@ -10,7 +10,7 @@ else
   current_branch="$PR_BRANCH"
 fi
 
-if [[ "$DEFAULT_REF" == "null" ]]; then
+if [[ -z "$DEFAULT_REF" ]]; then
   echo "::set-output name=skip::true"
 else
   echo "::set-output name=skip::false"
@@ -25,7 +25,7 @@ fi
 # We don't have a PR_BRANCH so we are not in a pull request, so there's no
 # linked PR to find.
 if [ -z "$PR_BRANCH" ]; then
-  if [[ "$DEFAULT_REF" == "null" ]]; then
+  if [[ -z "$DEFAULT_REF"  ]]; then
     echo "Not a pull request, skipping checkout"
   else
     echo "Not a pull request, using default ref $default"
@@ -66,7 +66,7 @@ for link in "$(echo "$PR_BODY" | grep -Eo "${REPO}(#|/pull/)[0-9]+")"; do
   fi
 done
 
-if [[ "$DEFAULT_REF" == "null" ]]; then
+if [[ -z "$DEFAULT_REF"  ]]; then
   echo "No linked pull request, skipping checkout"
 else
   echo "No linked pull request, using default ref $default"
