@@ -11,9 +11,9 @@ else
 fi
 
 if [[ -z "$DEFAULT_REF" ]]; then
-  echo "::set-output name=skip::true"
+  skip="true"
 else
-  echo "::set-output name=skip::false"
+  skip="false"
 fi
 
 if [[ "$current_branch" == feature.* ]]; then
@@ -31,6 +31,7 @@ if [ -z "$PR_BRANCH" ]; then
     echo "Not a pull request, using default ref $default"
   fi
 
+  echo "::set-output name=skip::$skip"
   echo "::set-output name=ref::$default"
   exit 0
 fi
@@ -59,6 +60,7 @@ for link in "$(echo "$PR_BODY" | grep -Eo "${REPO}(#|/pull/)[0-9]+")"; do
   )"
   if [[ "$?" == 0 && "$(echo "$json" | jq .state -r)" == "open" ]]; then
     echo "Linked to pull request $number"
+    echo "::set-output name=skip::false"
     echo "::set-output name=ref::refs/pull/$number/head"
     exit 0
   else
@@ -72,5 +74,6 @@ else
   echo "No linked pull request, using default ref $default"
 fi
 
+echo "::set-output name=skip::$skip"
 echo "::set-output name=ref::$default"
 echo "::endgroup::"
