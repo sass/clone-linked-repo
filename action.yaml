@@ -18,7 +18,7 @@ inputs:
       this will always use the same branch name as the default.
 
       This may be `null` to indicate that the repository shouldn't be cloned at
-      all if there isn't a linked PR.
+      all if there isn't a linked PR or a feature branch.
     default: main
   ssh-key:
     description: Passed directly to actions/checkout.

@@ -10,22 +10,22 @@ else
   current_branch="$PR_BRANCH"
 fi
 
-if [[ -z "$DEFAULT_REF" ]]; then
-  skip="true"
-else
-  skip="false"
-fi
-
 if [[ "$current_branch" == feature.* ]]; then
   default="$current_branch"
 else
   default="$DEFAULT_REF"
 fi
 
+if [[ -z "$default" ]]; then
+  skip="true"
+else
+  skip="false"
+fi
+
 # We don't have a PR_BRANCH so we are not in a pull request, so there's no
 # linked PR to find.
 if [ -z "$PR_BRANCH" ]; then
-  if [[ -z "$DEFAULT_REF"  ]]; then
+  if [[ -z "$default" ]]; then
     echo "Not a pull request, skipping checkout"
   else
     echo "Not a pull request, using default ref $default"
@@ -68,7 +68,7 @@ for link in "$(echo "$PR_BODY" | grep -Eo "${REPO}(#|/pull/)[0-9]+")"; do
   fi
 done
 
-if [[ -z "$DEFAULT_REF"  ]]; then
+if [[ -z "$default"  ]]; then
   echo "No linked pull request, skipping checkout"
 else
   echo "No linked pull request, using default ref $default"
