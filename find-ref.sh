@@ -31,8 +31,8 @@ if [ -z "$PR_BRANCH" ]; then
     echo "Not a pull request, using default ref $default"
   fi
 
-  echo "skip=$skip" | tee -a "$GITHUB_OUTPUT"
-  echo "ref=$default" | tee -a "$GITHUB_OUTPUT"
+  echo "skip=$skip" >> "$GITHUB_OUTPUT"
+  echo "ref=$default" >> "$GITHUB_OUTPUT"
   exit 0
 fi
 
@@ -60,8 +60,8 @@ for link in "$(echo "$PR_BODY" | grep -Eo "${REPO}(#|/pull/)[0-9]+")"; do
   )"
   if [[ "$?" == 0 && "$(echo "$json" | jq .state -r)" == "open" ]]; then
     echo "Linked to pull request $number"
-    echo "skip=false" | tee -a "$GITHUB_OUTPUT"
-    echo "ref=refs/pull/$number/head" | tee -a "$GITHUB_OUTPUT"
+    echo "skip=false" >> "$GITHUB_OUTPUT"
+    echo "ref=refs/pull/$number/head" >> "$GITHUB_OUTPUT"
     exit 0
   else
     echo "$link isn't a pull request."
@@ -74,6 +74,6 @@ else
   echo "No linked pull request, using default ref $default"
 fi
 
-echo "skip=$skip" | tee -a "$GITHUB_OUTPUT"
-echo "ref=$default" | tee -a "$GITHUB_OUTPUT"
+echo "skip=$skip" >> "$GITHUB_OUTPUT"
+echo "ref=$default" >> "$GITHUB_OUTPUT"
 echo "::endgroup::"
