@@ -61,9 +61,9 @@ runs:
     shell: bash
     run: |
       if [[ -z "$INPUT_PATH" ]]; then
-        echo "path=${REPO/*\//}" | tee -a "$GITHUB_OUTPUT"
+        echo "path=${REPO/*\//}" >> "$GITHUB_OUTPUT"
       else
-        echo "path=${INPUT_PATH}" | tee -a "$GITHUB_OUTPUT"
+        echo "path=${INPUT_PATH}" >> "$GITHUB_OUTPUT"
       fi
     env:
       INPUT_PATH: ${{ inputs.path }}
