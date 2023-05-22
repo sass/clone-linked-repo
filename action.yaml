@@ -61,15 +61,15 @@ runs:
     shell: bash
     run: |
       if [[ -z "$INPUT_PATH" ]]; then
-        echo "::set-output name=path::${REPO/*\//}"
+        echo "path=${REPO/*\//}" >> "$GITHUB_OUTPUT"
       else
-        echo "::set-output name=path::${INPUT_PATH}"
+        echo "path=${INPUT_PATH}" >> "$GITHUB_OUTPUT"
       fi
     env:
       INPUT_PATH: ${{ inputs.path }}
       REPO: ${{ inputs.repo }}
 
-  - uses: actions/checkout@v2
+  - uses: actions/checkout@v3
     if: steps.find-ref.outputs.skip == 'false'
     with:
       repository: ${{ inputs.repo }}
