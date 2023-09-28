@@ -41,6 +41,12 @@ inputs:
   submodules:
     description: Passed directly to actions/checkout.
 
+outputs:
+  cloned:
+    description: >
+      "true" if the repo was cloned, "false" if it wasn't.
+    value: ${{ steps.find-ref.outputs.skip == 'false' }}
+
 runs:
   using: composite
   steps:
