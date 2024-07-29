@@ -1,0 +1,20 @@
+name: Release
+
+on:
+  push:
+    branches: [main]
+
+env:
+  VERSION: v1
+
+jobs:
+  tag:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+      - run: git tag -d $VERSION
+      - run: git tag $VERSION
+      - run: git push origin :$VERSION
+      - run: git push --tag
