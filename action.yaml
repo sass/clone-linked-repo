@@ -28,6 +28,8 @@ inputs:
     description: Passed directly to actions/checkout.
   persist-credentials:
     description: Passed directly to actions/checkout.
+    # Default to the more secure option.
+    default: false
   path:
     description: >
       Like actions/checkout's path parameter, but defaults to the repository
@@ -75,7 +77,7 @@ runs:
       INPUT_PATH: ${{ inputs.path }}
       REPO: ${{ inputs.repo }}
 
-  - uses: actions/checkout@v7
+  - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
     if: steps.find-ref.outputs.skip == 'false'
     with:
       repository: ${{ inputs.repo }}
@@ -84,7 +86,7 @@ runs:
       ssh-key: ${{ inputs.ssh-key }}
       ssh-known-hosts: ${{ inputs.ssh-known-hosts }}
       ssh-strict: ${{ inputs.ssh-strict }}
-      persist-credentials: ${{ inputs.persist-credentials }}
+      persist-credentials: ${{ inputs.persist-credentials }} # zizmor: ignore[artipacked]
       path: ${{ steps.path.outputs.path }}
       clean: ${{ inputs.clean }}
       fetch-depth: ${{ inputs.fetch-depth }}
